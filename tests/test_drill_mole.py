@@ -26,7 +26,7 @@ def state(mole):
 class TestConstructor(unittest.TestCase):
     def test_tc01_invalid_values_raise(self):
         """TC-01: пустое имя, неположительные диаметр и скорость."""
-        for bad in ({"name": ""}, {"drill_diameter_m": 0}, {"drill_diameter_m": -1}, {"max_speed_kmh": 0}):
+        for bad in ({"name": ""}, {"name": "   "}, {"drill_diameter_m": 0}, {"drill_diameter_m": -1}, {"max_speed_kmh": 0}):
             with self.subTest(bad=bad):
                 # Act / Assert
                 with self.assertRaises(ValueError):
@@ -187,15 +187,19 @@ class TestCanOvercome(unittest.TestCase):
         self.assertIs(underground.can_overcome("river"), True)
         self.assertIs(came_back.can_overcome("river"), False)
 
-    def test_tc15_wall_needs_working_drill(self):
-        """TC-15: подкоп под стену только при износе < 100."""
-        # Arrange
-        new = make_mole()
+    def test_tc15_wall_requires_underground_and_usable_drill(self):
+        """TC-15: стена проходима только под землёй при износе < 100."""
+        mole = make_mole()
+        self.assertIs(mole.can_overcome("wall"), False)
+        mole.move(1, "soil")
+        before = state(mole)
+        self.assertIs(mole.can_overcome("wall"), True)
+        self.assertEqual(state(mole), before)
+        mole.move(1, "surface")
+        self.assertIs(mole.can_overcome("wall"), False)
         worn = make_mole()
         worn.move(10, "rock")
         worn.move(10, "rock")
-        # Act / Assert
-        self.assertIs(new.can_overcome("wall"), True)
         self.assertIs(worn.can_overcome("wall"), False)
 
     def test_tc16_boulder_needs_big_drill(self):
