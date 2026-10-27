@@ -60,7 +60,7 @@ def __init__(
 - `ValueError` — если `drill_diameter_m` или `max_speed_kmh` ≤ 0.
 - `ValueError` — если `fuel` вне диапазона 0…100.
 
-После создания: `position_km == 0.0`, `drill_wear == 0.0`, `is_underground == False` (крот на поверхности).
+После создания: `position_km == 0.0`, `drill_wear == 0.0`, `is_underground == False` (крот на поверхности). Начальный `fuel` сохраняется без округления, после приведения к `float`.
 
 ### 3.3. Атрибуты
 
