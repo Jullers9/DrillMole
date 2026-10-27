@@ -1,5 +1,7 @@
 # DrillMole — крот-бур «Копатель»
 
+![Крот-бур «Копатель»](docs/drill-mole.png)
+
 Реализация класса `DrillMole` по SPEC.md
 (стихия — земля, конструкционный элемент — бур).
 
@@ -22,7 +24,7 @@
 python -m unittest discover -s tests -t . -v
 ```
 
-Ожидаемый результат: `Ran 32 tests ... OK`.
+Текущий набор содержит 36 тестов. Статус приёмки и оставшиеся замечания — в [ACCEPTANCE.md](ACCEPTANCE.md).
 
 
 Запуск отдельного тестового модуля:
@@ -31,6 +33,7 @@ python -m unittest discover -s tests -t . -v
 python -m unittest tests.test_drill_mole -v
 python -m unittest tests.test_drill_mole_scenarios -v
 python -m unittest tests.test_review_regressions -v
+python -m unittest tests.test_acceptance_regressions -v
 ```
 
 ## Проверка стиля
