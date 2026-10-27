@@ -2,7 +2,7 @@
 
 Базовый крот (если не сказано иное): `DrillMole("Копатель", drill_diameter_m=1.2, max_speed_kmh=20, fuel=100)`.
 
-Соотношение: 28 модульных / 4 сценарных (~88 / 12).
+Соотношение: 32 модульных / 4 сценарных (~89 / 11).
 
 ## Модульные тесты
 
@@ -36,6 +36,10 @@
 | TC-30 | module | SPEC 3.4.4–3.4.5 | новый крот, полный бак, износ 0 | replace_drill() дважды; refuel(20) | None; состояние без изменений | medium |
 | TC-31 | module | SPEC 3.5 | max_speed_kmh=3 | move(1, "surface") | время 1/3 с точностью 7 знаков; position=1, fuel=99 | medium |
 | TC-32 | module | SPEC 3.2, 3.5 | новый крот | NaN, inf, -inf в числовых параметрах конструктора, move, calculate_fuel, refuel | ValueError; при ошибке метода состояние без изменений | high |
+| TC-33 | module | SPEC 3.4.1, 3.4.3 | fuel=0.1234567 | calculate_fuel(0.1234567, "surface"); move(0.1234567, "surface") | расчёт 0.1234567; движение успешно, fuel=0 | high |
+| TC-34 | module | SPEC 3.4.1 | fuel=0.3 | move(0.1, "rock"); отдельно move(0.100001, "rock") | первое успешно, fuel=0; второе — DrillMoleNoFuel, состояние не меняется | high |
+| TC-35 | module | SPEC 3.4.1 | fuel=0 | move(0.0000000005, "surface") | DrillMoleNoFuel, состояние не меняется | medium |
+| TC-36 | module | SPEC 3.4.1 | move(10, "rock") дважды, износ 100 | move(0.0000001, "soil") | DrillMoleDrillWorn, состояние не меняется | medium |
 
 ## Сценарные тесты
 
