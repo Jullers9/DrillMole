@@ -45,6 +45,7 @@ class DrillMoleNotOnSurface(DrillMoleError):
 
 #: Знаков после запятой для fuel, drill_wear и position_km (SPEC 3.5)
 _PRECISION = 6
+_EPSILON = 1e-9
 #: Верхний предел топлива и износа бура
 _MAX_LEVEL = 100.0
 #: Минимальный диаметр бура, которым можно расколоть валун
@@ -204,14 +205,10 @@ class DrillMole:
 
     @staticmethod
     def _fuel_cost(distance: float, terrain: str) -> float:
-        """Расход топлива на перемещение; вода запрещена.
-
-        Расход округляется так же, как и остальные величины, чтобы сравнение
-        с запасом не зависело от шума float (например, 0.1 * 3).
-        """
+        """Расход топлива на перемещение (без округления); вода запрещена."""
         if terrain == _WATER:
             raise DrillMoleCannotSwim("drill mole cannot swim")
-        return _round(distance * _TERRAIN_RULES[terrain].fuel_per_km)
+        return distance * _TERRAIN_RULES[terrain].fuel_per_km
 
     # методы (SPEC 3.4)
 
@@ -248,13 +245,13 @@ class DrillMole:
             if new_wear > _MAX_LEVEL:
                 raise DrillMoleDrillWorn("drill is worn out")
 
-        if fuel_cost > self._fuel:
+        if fuel_cost - self._fuel > _EPSILON:
             raise DrillMoleNoFuel(
                 f"not enough fuel: required {fuel_cost:g}, have {self._fuel:g}"
             )
 
         # Все проверки пройдены — теперь меняем состояние целиком.
-        self._fuel = _round(self._fuel - fuel_cost)
+        self._fuel = max(0.0, _round(self._fuel - fuel_cost))
         self._drill_wear = new_wear
         self._position_km = _round(self._position_km + distance)
         self._is_underground = rule.underground
